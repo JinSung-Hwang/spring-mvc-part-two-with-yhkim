@@ -1,3 +1,5 @@
+김영한의 스프링 MVC 2 활용편을 수강하며 작성한 Code Repository입니다.
+
 ## 세팅
 
 ### Encoding 세팅 
