@@ -7,6 +7,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -42,34 +45,92 @@ public class ValidationItemControllerV2 {
         return "validation/v2/addForm";
     }
 
-    @PostMapping("/add")
-    public String addItem(@ModelAttribute Item item, RedirectAttributes redirectAttributes, Model model) {
+//    @PostMapping("/add")
+    public String addItemV1(@ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) { // BindingResult는 Item 다음에 와야한다. 순서가 중요하다.!!! Item의 에러를 담기 때문에 그렇다고 한다.
+        // bindingResult는 타임리프의 #fileds, th:errors, th:errorclass 와 같이 동작하여 error표시를 편리하게 해준다.
+        // 사용법 참고 validation/src/main/resources/templates/validation/v2/addForm.html
+
+        // BindingResult 정보
+        // 1. @ModelAttribute가 걸린 Item 같은 Object에 데이터를 바인딩하다가 에러가 나면 어떻게 될까?
+        //   BindingResult가 없다면 400에러가 발생하고 바로 에러 페이지를 호출한다.
+        //   하지만 BindingResult가 있으면 BindingResult에 FieldError를 담아서 컨트롤러를 정상 호출한다.
+        // 2. BindingResult와 Errors는 무엇인가?
+        //   BindingResult는 인터페이스이고 Errors라는 인터페이스를 상속받고 있다.
+        //   BindingResult를 파라미터로 사용하면 BeanPropertyBindingResult라는 구현체가 값으로 들어온다.
+        //   Errors를 사용해도 되지만 BindingResult의 여러 메소드를 사용할 수 없다.
+
         // 검증 오류 결과를 보관하기 위한 Map
         Map<String, String> errors = new HashMap<>();
 
         // 검증 로직
         if (!StringUtils.hasText(item.getItemName())) {
-            errors.put("itemName", "상품 이름은 필수입니다.");
+            bindingResult.addError(new FieldError("item", "itemName", "상품 이름은 필수 입니다."));
         }
         if (item.getPrice() == null || item.getPrice() < 1000 || item.getPrice() > 10000000) {
-            errors.put("price", "가격은 1000 ~ 10000000 까지 허용합니다.");
+            bindingResult.addError(new FieldError("item", "price", "가격은 1000 ~ 10000000 까지 허용합니다."));
         }
         if (item.getQuantity() == null || item.getQuantity() >= 9999) {
-            errors.put("quantity", "수량은 최대 9999까지 허용합니다.");
+            bindingResult.addError(new FieldError("item", "quantity", "수량은 최대 9999까지 허용합니다."));
         }
 
         // 특정 필드가 아닌 복합 룰 검증
         if (item.getPrice() != null && item.getQuantity() != null) {
             int resultPrice = item.getPrice() * item.getQuantity();
             if (resultPrice < 10000) {
-                errors.put("globalError", "가격 * 수량 합은 10000원 이상이어야합니다. 현재 값 = " + resultPrice);
+                bindingResult.addError(new ObjectError("item", "가격 * 수량 합은 10000원 이상이어야합니다. 현재 값 = " + resultPrice));
+                // Field가 따로 없고 global로 error가 발생하는 형태라서 ObjectError를 넣었다.
             }
         }
 
         // 검증에 실패하면 다시 등록 폼(add form)으로
-        if (!errors.isEmpty()) {
-            log.info("errors = {}", errors);
-            model.addAttribute("errors", errors);
+        if (bindingResult.hasErrors()) {
+            log.info("errors = {}", bindingResult); // bindingResult는 아래처럼 Model에 따로 담지 않아도 View에 전달된다.
+//            model.addAttribute("errors", errors);
+            return "validation/v2/addForm";
+        }
+
+        // 성공 로직
+        Item savedItem = itemRepository.save(item);
+        redirectAttributes.addAttribute("itemId", savedItem.getId());
+        redirectAttributes.addAttribute("status", true);
+        return "redirect:/validation/v2/items/{itemId}";
+    }
+
+
+
+    @PostMapping("/add")
+    public String addItemV2(@ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
+        // 기존 addItemV1는 에러가 발생하면 사용자가 입력한 값이 모두 사라지는 이슈가 있었다.
+        // 하여 V2에서는 해당 이슈를 수정하는 방법을 배우자.
+
+        // 검증 오류 결과를 보관하기 위한 Map
+        Map<String, String> errors = new HashMap<>();
+
+        // 검증 로직
+        if (!StringUtils.hasText(item.getItemName())) {
+            // FieldError의 두번쨰 생성자를 통해서 생성하고 rejectedValue에 값을 넣으면 에러가 났을때 값을 입력시켜준다. 즉 오류가 나도 값을 그대로 유지 시킬 수 있는 것이다.
+            bindingResult.addError(new FieldError("item", "itemName", item.getItemName(), false, null, null,  "상품 이름은 필수 입니다."));
+        }
+        if (item.getPrice() == null || item.getPrice() < 1000 || item.getPrice() > 10000000) {
+            bindingResult.addError(new FieldError("item", "price", item.getPrice(), false, null, null, "가격은 1000 ~ 10000000 까지 허용합니다."));
+        }
+        if (item.getQuantity() == null || item.getQuantity() >= 9999) {
+            bindingResult.addError(new FieldError("item", "quantity", item.getQuantity(), false, null, null, "수량은 최대 9999까지 허용합니다."));
+        }
+
+        // 특정 필드가 아닌 복합 룰 검증
+        if (item.getPrice() != null && item.getQuantity() != null) {
+            int resultPrice = item.getPrice() * item.getQuantity();
+            if (resultPrice < 10000) {
+                bindingResult.addError(new ObjectError("item", null, null,  "가격 * 수량 합은 10000원 이상이어야합니다. 현재 값 = " + resultPrice));
+                // Field가 따로 없고 global로 error가 발생하는 형태라서 ObjectError를 넣었다.
+            }
+        }
+
+        // 검증에 실패하면 다시 등록 폼(add form)으로
+        if (bindingResult.hasErrors()) {
+            log.info("errors = {}", bindingResult); // bindingResult는 Model에 따로 담지 않아도 view에 전달된다.
+//            model.addAttribute("errors", errors);
             return "validation/v2/addForm";
         }
 
