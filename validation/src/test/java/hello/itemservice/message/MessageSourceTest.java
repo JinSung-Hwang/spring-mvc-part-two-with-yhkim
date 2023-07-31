@@ -27,7 +27,6 @@ public class MessageSourceTest {
         assertThatThrownBy(() -> ms.getMessage("no_code", null, null))
                 .isInstanceOf(NoSuchMessageException.class);
     }
-
     @Test
     void notFoundMessageCodeDefaultMessage() {
         String result = ms.getMessage("no_code", null, "기본 메시지", null);

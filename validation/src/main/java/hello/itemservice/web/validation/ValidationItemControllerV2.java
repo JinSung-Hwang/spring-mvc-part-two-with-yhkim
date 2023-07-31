@@ -10,6 +10,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
+import org.springframework.validation.ValidationUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -98,7 +99,7 @@ public class ValidationItemControllerV2 {
 
 
 
-    @PostMapping("/add")
+//    @PostMapping("/add")
     public String addItemV2(@ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
         // 기존 addItemV1는 에러가 발생하면 사용자가 입력한 값이 모두 사라지는 이슈가 있었다.
         // 하여 V2에서는 해당 이슈를 수정하는 방법을 배우자.
@@ -140,6 +141,100 @@ public class ValidationItemControllerV2 {
         redirectAttributes.addAttribute("status", true);
         return "redirect:/validation/v2/items/{itemId}";
     }
+
+//    @PostMapping("/add")
+    public String addItemV3(@ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
+        // 검증 로직
+        if (!StringUtils.hasText(item.getItemName())) {
+            // codes에 string을 넣는데 첫번쨰 error code를 못찾으면 두번쨰 error code를 넣는다.
+            // 두번쨰 error code를 못찾으면 FieldError 파라미터의 default message를 출력한다.
+            bindingResult.addError(new FieldError("item", "itemName", item.getItemName(), false, new String[]{"required.item.itemName", "default.error.message"}, null,  null));
+        }
+        if (item.getPrice() == null || item.getPrice() < 1000 || item.getPrice() > 10000000) {
+            bindingResult.addError(new FieldError("item", "price", item.getPrice(), false, new String[]{"range.item.price"}, new Object[]{1000, 1000000},  null));
+        }
+        if (item.getQuantity() == null || item.getQuantity() >= 9999) {
+            bindingResult.addError(new FieldError("item", "quantity", item.getQuantity(), false, new String[]{"max.item.quantity"}, new Object[]{9999}, null));
+        }
+
+        // 특정 필드가 아닌 복합 룰 검증
+        if (item.getPrice() != null && item.getQuantity() != null) {
+            int resultPrice = item.getPrice() * item.getQuantity();
+            if (resultPrice < 10000) {
+                bindingResult.addError(new ObjectError("item", new String[]{"totalPriceMin"}, new Object[]{10000, resultPrice},  null));
+                // Field가 따로 없고 global로 error가 발생하는 형태라서 ObjectError를 넣었다.
+            }
+        }
+
+        // 검증에 실패하면 다시 등록 폼(add form)으로
+        if (bindingResult.hasErrors()) {
+            log.info("errors = {}", bindingResult); // bindingResult는 Model에 따로 담지 않아도 view에 전달된다.
+//            model.addAttribute("errors", errors);
+            return "validation/v2/addForm";
+        }
+
+        // 성공 로직
+        Item savedItem = itemRepository.save(item);
+        redirectAttributes.addAttribute("itemId", savedItem.getId());
+        redirectAttributes.addAttribute("status", true);
+        return "redirect:/validation/v2/items/{itemId}";
+    }
+
+    @PostMapping("/add")
+    public String addItemV4(@ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
+
+        if (bindingResult.hasErrors()) {
+            log.info("errors = {}", bindingResult);
+            return "validation/v2/addForm";
+        }
+
+        log.info("bindingResult.getObjectName {}", bindingResult.getObjectName());
+        log.info("bindingResult.getTarget {}", bindingResult.getTarget());
+
+//        ValidationUtils.rejectIfEmptyOrWhitespace(bindingResult, "itemName", "required");
+        // 아래의 StringUtils.hastText와 bindingResult.rejectValue 구문을 합친 구문으로 만들어주는것이 ValidationUtils.rejectIfEmptyOrWhitespace 이다.
+
+        // 검증 로직
+        if (!StringUtils.hasText(item.getItemName())) {
+            // bindingResult.rejectValue는 FieldError의 objectName, field, new String[]{}의 중복된 문자열 등을 자동으로 처리해준다.
+            // 자동으로 처리할 수 있는 이유는 Item뒤에 BindingResult를 파라미터로 넣기떄문에 BidingResult에서는 앞에있는 Object의 이름을 알 수 있다.
+            // object를 알 수 있는 메서드는 아래와 같다.
+            // 1. bindingResult.getObjectName();
+            // 2. bindingResult.getTarget();
+            bindingResult.rejectValue("itemName", "required");
+            // bindingResult.rejectValue 안쪽에서는 MessageCodesResolver가 사용된다.
+            // 동작 방식 확인은 MessageCodesResolverTest.java 파일을 참조하자.
+        }
+        if (item.getPrice() == null || item.getPrice() < 1000 || item.getPrice() > 10000000) {
+            bindingResult.rejectValue("price", "range", new Object[]{1000, 10000000}, null);
+        }
+        if (item.getQuantity() == null || item.getQuantity() >= 9999) {
+            bindingResult.rejectValue("quantity", "max", new Object[]{9999}, null);
+        }
+
+        // 특정 필드가 아닌 복합 룰 검증
+        if (item.getPrice() != null && item.getQuantity() != null) {
+            int resultPrice = item.getPrice() * item.getQuantity();
+            if (resultPrice < 10000) {
+                bindingResult.rejectValue("totalPriceMin", "max", new Object[]{10000, resultPrice}, null);
+            }
+        }
+
+        // 검증에 실패하면 다시 등록 폼(add form)으로
+        if (bindingResult.hasErrors()) {
+            log.info("errors = {}", bindingResult); // bindingResult는 Model에 따로 담지 않아도 view에 전달된다.
+//            model.addAttribute("errors", errors);
+            return "validation/v2/addForm";
+        }
+
+        // 성공 로직
+        Item savedItem = itemRepository.save(item);
+        redirectAttributes.addAttribute("itemId", savedItem.getId());
+        redirectAttributes.addAttribute("status", true);
+        return "redirect:/validation/v2/items/{itemId}";
+    }
+
+
 
     @GetMapping("/{itemId}/edit")
     public String editForm(@PathVariable Long itemId, Model model) {
