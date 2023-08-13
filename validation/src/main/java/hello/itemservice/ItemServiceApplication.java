@@ -18,6 +18,7 @@ public class ItemServiceApplication implements WebMvcConfigurer {
 //	public Validator getValidator() { // validator global 적용이다.
    	  // controller에는 @Validated 라는 어노테이션을 붙어있어야한다.
 	    // 하나의 validator를 global로 사용하는일은 잘 없을거 같다.
+			// 이 코드는 controllerV2의 ItemV6와 같이 보면된다.
 //		return new ItemValidator();
 //	}
 }
