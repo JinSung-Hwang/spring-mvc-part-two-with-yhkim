@@ -58,6 +58,14 @@ public class ValidationItemControllerV3 {
         // @Validated는 스프링 전용 검증 애노테이션이고 @Valid는 자바 표준 검증 애노테이션이다.
         // 스프링에서 @Valid를 사용해도 검증이 가능하도록 호환성을 지원해준다.
 
+        if (item.getPrice() != null && item.getQuantity() != null) { // 복잡한 로직은 자바로직으로 처리한다. 물론 이 코드를 메소드를 뽑아서 가독성을 높일 수 있다.
+            int resultPrice = item.getPrice() * item.getQuantity();
+            if (resultPrice < 10000) {
+                bindingResult.reject("totalPriceMin", new Object[]{10000, resultPrice}, null);
+            }
+        }
+
+
         // 검증에 실패하면 다시 등록 폼(add form)으로
         if (bindingResult.hasErrors()) {
             log.info("errors = {}", bindingResult);
