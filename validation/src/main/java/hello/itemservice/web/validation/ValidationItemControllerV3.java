@@ -2,6 +2,8 @@ package hello.itemservice.web.validation;
 
 import hello.itemservice.domain.item.Item;
 import hello.itemservice.domain.item.ItemRepository;
+import hello.itemservice.domain.item.SaveCheck;
+import hello.itemservice.domain.item.UpdateCheck;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -48,7 +50,7 @@ public class ValidationItemControllerV3 {
         return "validation/v3/addForm";
     }
 
-    @PostMapping("/add")
+//    @PostMapping("/add")
     public String addItem(@Validated @ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
         // spring-boot-starter-validation를 gradle에 등록해두면 스프링이 LocalValidatorFactoryBean을 글로벌로 validator로 등록한다.
         // 그러면 이 validator가 @NotNull같은 애노테이션을 보고 검증을 수행한다.
@@ -57,6 +59,33 @@ public class ValidationItemControllerV3 {
         // @Validated, @Valid 둘다 사용 가능하다.
         // @Validated는 스프링 전용 검증 애노테이션이고 @Valid는 자바 표준 검증 애노테이션이다.
         // 스프링에서 @Valid를 사용해도 검증이 가능하도록 호환성을 지원해준다.
+
+        if (item.getPrice() != null && item.getQuantity() != null) { // 복잡한 로직은 자바로직으로 처리한다. 물론 이 코드를 메소드를 뽑아서 가독성을 높일 수 있다.
+            int resultPrice = item.getPrice() * item.getQuantity();
+            if (resultPrice < 10000) {
+                bindingResult.reject("totalPriceMin", new Object[]{10000, resultPrice}, null);
+            }
+        }
+
+
+        // 검증에 실패하면 다시 등록 폼(add form)으로
+        if (bindingResult.hasErrors()) {
+            log.info("errors = {}", bindingResult);
+            return "validation/v3/addForm";
+        }
+
+        // 성공 로직
+        Item savedItem = itemRepository.save(item);
+        redirectAttributes.addAttribute("itemId", savedItem.getId());
+        redirectAttributes.addAttribute("status", true);
+        return "redirect:/validation/v3/items/{itemId}";
+    }
+
+    @PostMapping("/add")
+    public String addItem2(@Validated(value = SaveCheck.class) @ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
+//        또는 @Validated(SaveCheck.class) 이렇게 쓴다.
+//        @Valid에는 value값을 넣을수 없어서 groups 기능을 쓰지 못한다. @Validated와 @Valid의 사용성에서 가장 큰 차이점이다.
+//        Item.java 코드와 같이 보면 알겠지만  groups는 너무 복잡해서 실무에서 잘 사용하지 않는다.
 
         if (item.getPrice() != null && item.getQuantity() != null) { // 복잡한 로직은 자바로직으로 처리한다. 물론 이 코드를 메소드를 뽑아서 가독성을 높일 수 있다.
             int resultPrice = item.getPrice() * item.getQuantity();
@@ -88,7 +117,7 @@ public class ValidationItemControllerV3 {
     }
 
     @PostMapping("/{itemId}/edit")
-    public String edit(@PathVariable Long itemId, @Validated @ModelAttribute Item item, BindingResult bindingResult) {
+    public String edit(@PathVariable Long itemId, @Validated(value = UpdateCheck.class) @ModelAttribute Item item, BindingResult bindingResult) {
 
         if (item.getPrice() != null && item.getQuantity() != null) { // 복잡한 로직은 자바로직으로 처리한다. 물론 이 코드를 메소드를 뽑아서 가독성을 높일 수 있다.
             int resultPrice = item.getPrice() * item.getQuantity();
