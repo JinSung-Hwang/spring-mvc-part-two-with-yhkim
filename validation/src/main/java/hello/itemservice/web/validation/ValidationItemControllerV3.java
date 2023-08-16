@@ -88,7 +88,21 @@ public class ValidationItemControllerV3 {
     }
 
     @PostMapping("/{itemId}/edit")
-    public String edit(@PathVariable Long itemId, @ModelAttribute Item item) {
+    public String edit(@PathVariable Long itemId, @Validated @ModelAttribute Item item, BindingResult bindingResult) {
+
+        if (item.getPrice() != null && item.getQuantity() != null) { // 복잡한 로직은 자바로직으로 처리한다. 물론 이 코드를 메소드를 뽑아서 가독성을 높일 수 있다.
+            int resultPrice = item.getPrice() * item.getQuantity();
+            if (resultPrice < 10000) {
+                bindingResult.reject("totalPriceMin", new Object[]{10000, resultPrice}, null);
+            }
+        }
+
+        // 검증에 실패하면 다시 등록 폼(add form)으로
+        if (bindingResult.hasErrors()) {
+            log.info("errors = {}", bindingResult);
+            return "validation/v3/editForm";
+        }
+
         itemRepository.update(itemId, item);
         return "redirect:/validation/v3/items/{itemId}";
     }
