@@ -14,15 +14,15 @@ import javax.validation.constraints.NotNull;
 // scriptAssert로 약간의 복잡한 validation을 처리할 수 있지만 더 복잡한 validation은 처리하기 힘들다. 그래서 실무에서는 복잡한 validation은 자바로 처리하는것으로 통일한다.
 public class Item {
 
-    @NotNull(groups = UpdateCheck.class)
+//    @NotNull(groups = UpdateCheck.class)
     private Long id;
-    @NotBlank(groups = {SaveCheck.class, UpdateCheck.class}, message = "공백X")
+//    @NotBlank(groups = {SaveCheck.class, UpdateCheck.class}, message = "공백X")
     private String itemName;
-    @NotNull(groups = {SaveCheck.class, UpdateCheck.class})
-    @Range(min = 1000, max = 100000, groups = {SaveCheck.class, UpdateCheck.class})
+//    @NotNull(groups = {SaveCheck.class, UpdateCheck.class})
+//    @Range(min = 1000, max = 100000, groups = {SaveCheck.class, UpdateCheck.class})
     private Integer price;
-    @NotNull(groups = {SaveCheck.class, UpdateCheck.class})
-    @Max(value = 9999, groups = {SaveCheck.class})
+//    @NotNull(groups = {SaveCheck.class, UpdateCheck.class})
+//    @Max(value = 9999, groups = {SaveCheck.class})
     private Integer quantity;
 
     public Item() {

@@ -4,6 +4,8 @@ import hello.itemservice.domain.item.Item;
 import hello.itemservice.domain.item.ItemRepository;
 import hello.itemservice.domain.item.SaveCheck;
 import hello.itemservice.domain.item.UpdateCheck;
+import hello.itemservice.web.validation.form.ItemSaveForm;
+import hello.itemservice.web.validation.form.ItemUpdateForm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -28,93 +30,61 @@ public class ValidationItemControllerV4 {
     public String items(Model model) {
         List<Item> items = itemRepository.findAll();
         model.addAttribute("items", items);
-        return "validation/v3/items";
+        return "validation/v4/items";
     }
 
     @GetMapping("/{itemId}")
     public String item(@PathVariable long itemId, Model model) {
         Item item = itemRepository.findById(itemId);
         model.addAttribute("item", item);
-        return "validation/v3/item";
+        return "validation/v4/item";
     }
 
     @GetMapping("/add")
     public String addForm(Model model) {
         model.addAttribute("item", new Item());
-        return "validation/v3/addForm";
-    }
-
-//    @PostMapping("/add")
-    public String addItem(@Validated @ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
-        // spring-boot-starter-validation를 gradle에 등록해두면 스프링이 LocalValidatorFactoryBean을 글로벌로 validator로 등록한다.
-        // 그러면 이 validator가 @NotNull같은 애노테이션을 보고 검증을 수행한다.
-        // BeanValidator는 객체에 바인딩이 성공한 데이터만 validation을 진행한다. = 바인딩 되지 못하면 validation을 진행하지 않는다.
-
-        // @Validated, @Valid 둘다 사용 가능하다.
-        // @Validated는 스프링 전용 검증 애노테이션이고 @Valid는 자바 표준 검증 애노테이션이다.
-        // 스프링에서 @Valid를 사용해도 검증이 가능하도록 호환성을 지원해준다.
-
-        if (item.getPrice() != null && item.getQuantity() != null) { // 복잡한 로직은 자바로직으로 처리한다. 물론 이 코드를 메소드를 뽑아서 가독성을 높일 수 있다.
-            int resultPrice = item.getPrice() * item.getQuantity();
-            if (resultPrice < 10000) {
-                bindingResult.reject("totalPriceMin", new Object[]{10000, resultPrice}, null);
-            }
-        }
-
-
-        // 검증에 실패하면 다시 등록 폼(add form)으로
-        if (bindingResult.hasErrors()) {
-            log.info("errors = {}", bindingResult);
-            return "validation/v3/addForm";
-        }
-
-        // 성공 로직
-        Item savedItem = itemRepository.save(item);
-        redirectAttributes.addAttribute("itemId", savedItem.getId());
-        redirectAttributes.addAttribute("status", true);
-        return "redirect:/validation/v3/items/{itemId}";
+        return "validation/v4/addForm";
     }
 
     @PostMapping("/add")
-    public String addItem2(@Validated(value = SaveCheck.class) @ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
-//        또는 @Validated(SaveCheck.class) 이렇게 쓴다.
-//        @Valid에는 value값을 넣을수 없어서 groups 기능을 쓰지 못한다. @Validated와 @Valid의 사용성에서 가장 큰 차이점이다.
-//        Item.java 코드와 같이 보면 알겠지만  groups는 너무 복잡해서 실무에서 잘 사용하지 않는다.
-
-        if (item.getPrice() != null && item.getQuantity() != null) { // 복잡한 로직은 자바로직으로 처리한다. 물론 이 코드를 메소드를 뽑아서 가독성을 높일 수 있다.
-            int resultPrice = item.getPrice() * item.getQuantity();
+    public String addItem(@Validated @ModelAttribute("item") ItemSaveForm form, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
+        if (form.getPrice() != null && form.getQuantity() != null) { // 복잡한 로직은 자바로직으로 처리한다. 물론 이 코드를 메소드를 뽑아서 가독성을 높일 수 있다.
+            int resultPrice = form.getPrice() * form.getQuantity();
             if (resultPrice < 10000) {
                 bindingResult.reject("totalPriceMin", new Object[]{10000, resultPrice}, null);
             }
         }
 
-
         // 검증에 실패하면 다시 등록 폼(add form)으로
         if (bindingResult.hasErrors()) {
             log.info("errors = {}", bindingResult);
-            return "validation/v3/addForm";
+            return "validation/v4/addForm";
         }
+
+        Item item = new Item();
+        item.setItemName(form.getItemName());
+        item.setPrice(form.getPrice());
+        item.setQuantity(form.getQuantity());
 
         // 성공 로직
         Item savedItem = itemRepository.save(item);
         redirectAttributes.addAttribute("itemId", savedItem.getId());
         redirectAttributes.addAttribute("status", true);
-        return "redirect:/validation/v3/items/{itemId}";
+        return "redirect:/validation/v4/items/{itemId}";
     }
-
 
     @GetMapping("/{itemId}/edit")
     public String editForm(@PathVariable Long itemId, Model model) {
         Item item = itemRepository.findById(itemId);
         model.addAttribute("item", item);
-        return "validation/v3/editForm";
+        return "validation/v4/editForm";
     }
 
     @PostMapping("/{itemId}/edit")
-    public String edit(@PathVariable Long itemId, @Validated(value = UpdateCheck.class) @ModelAttribute Item item, BindingResult bindingResult) {
+    public String edit(@PathVariable Long itemId, @Validated(value = UpdateCheck.class) @ModelAttribute("item") ItemUpdateForm form, BindingResult bindingResult) {
 
-        if (item.getPrice() != null && item.getQuantity() != null) { // 복잡한 로직은 자바로직으로 처리한다. 물론 이 코드를 메소드를 뽑아서 가독성을 높일 수 있다.
-            int resultPrice = item.getPrice() * item.getQuantity();
+        if (form.getPrice() != null && form.getQuantity() != null) { // 복잡한 로직은 자바로직으로 처리한다. 물론 이 코드를 메소드를 뽑아서 가독성을 높일 수 있다.
+            int resultPrice = form.getPrice() * form.getQuantity();
             if (resultPrice < 10000) {
                 bindingResult.reject("totalPriceMin", new Object[]{10000, resultPrice}, null);
             }
@@ -123,11 +93,16 @@ public class ValidationItemControllerV4 {
         // 검증에 실패하면 다시 등록 폼(add form)으로
         if (bindingResult.hasErrors()) {
             log.info("errors = {}", bindingResult);
-            return "validation/v3/editForm";
+            return "validation/v4/editForm";
         }
 
+        Item item = new Item();
+        item.setItemName(form.getItemName());
+        item.setPrice(form.getPrice());
+        item.setQuantity(form.getQuantity());
+
         itemRepository.update(itemId, item);
-        return "redirect:/validation/v3/items/{itemId}";
+        return "redirect:/validation/v4/items/{itemId}";
     }
 
 }
