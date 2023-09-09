@@ -12,6 +12,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -90,7 +91,7 @@ public class LoginController {
   } // 세션을 특별한 어떤 것이라기 보다는 그냥 최대한 데이터를 서버쪽에 저장해두는 방법일 뿐이다.
 
 
-  @PostMapping("/login")
+//  @PostMapping("/login")
   public String loginV3(@Validated @ModelAttribute LoginForm form, BindingResult bindingResult, HttpServletRequest request) {
     if (bindingResult.hasErrors()) {
       return "login/loginForm";
@@ -111,8 +112,39 @@ public class LoginController {
     return "redirect:/";
   }
 
-    @PostMapping("/logout")
+//    @PostMapping("/logout")
   public String logoutV3(HttpServletRequest request) {
+    // getSession이 false일때: 세션이있으면 있는 세션을 반환하고 없으면 null을 반환한다.
+    HttpSession session = request.getSession(false);
+    if (session != null) {
+      session.invalidate();
+    }
+
+    return "redirect:/";
+  }
+
+  @PostMapping("/login")
+  public String loginV4(@Validated @ModelAttribute LoginForm form, BindingResult bindingResult, HttpServletRequest request, @RequestParam(defaultValue = "/") String redirectURL) {
+    if (bindingResult.hasErrors()) {
+      return "login/loginForm";
+    }
+
+    Member loginMember = loginService.login(form.getLoginId(), form.getPassword());
+    if (loginMember == null) {
+      bindingResult.reject("loginFail", "아이디 또는 비밀번호가 맞지 않습니다.");
+      return "login/loginForm";
+    }
+
+    // 로그인 성공 처리
+    HttpSession session = request.getSession(true);
+    // 세션에 로그인 회원 정보 보관
+    session.setAttribute(SessionConst.LOGIN_MEMBER, loginMember);
+
+    return "redirect:" + redirectURL; // note: 사용자가 보려던 화면에 갔는데 로그인 화면이 나와서 로그인했을때 홈으로 가는것이 아니라 사용자가 가려던 화면을 가게 만듬
+  }
+
+  @PostMapping("/logout")
+  public String logoutV4(HttpServletRequest request) {
     // getSession이 false일때: 세션이있으면 있는 세션을 반환하고 없으면 null을 반환한다.
     HttpSession session = request.getSession(false);
     if (session != null) {
