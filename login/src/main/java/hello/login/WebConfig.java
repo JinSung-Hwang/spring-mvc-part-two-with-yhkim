@@ -1,19 +1,24 @@
 package hello.login;
 
+import hello.login.web.argumentresolver.LoginMemberArgumentResolver;
 import hello.login.web.filter.LogFilter;
 import hello.login.web.filter.LoginCheckFilter;
 import hello.login.web.interceptor.LogInterceptor;
 import hello.login.web.interceptor.LoginCheckInterceptor;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
+import java.util.List;
 import javax.servlet.Filter;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
+  @Override
+  public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) { // 여기서 LoginMemberArgumentResolver를 등록해줘야 ArgumentResolver가 동작한다.
+    resolvers.add(new LoginMemberArgumentResolver());
+  }
 
   // 인터셉터의 장점은 filter보다 path에 관한 세밀한 설정이 가능하다는 것이다.
   // 또한 filter는 하나 의 함수에서 시작과 끝까지의 관심사를 다 처리해야하지만 interceptor는 preHandle, postHandle, afterCompletion으로 관심사 분리를 할 수 있다.
