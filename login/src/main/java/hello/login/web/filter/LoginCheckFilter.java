@@ -2,6 +2,7 @@ package hello.login.web.filter;
 
 import hello.login.web.SessionConst;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 import org.springframework.util.PatternMatchUtils;
 
 import javax.servlet.*;
@@ -11,6 +12,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 @Slf4j
+@Component
 public class LoginCheckFilter implements Filter {
   // init 메소드와 destory 메소드는 오버라이드해서 구현하지 않아도 되도록 filter interface에서 default 키워드를 사용했다.
 
