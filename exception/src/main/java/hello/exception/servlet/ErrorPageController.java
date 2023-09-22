@@ -20,7 +20,7 @@ public class ErrorPageController {
   public static final String ERROR_STATUS_CODE = "javax.servlet.error.status_code";
 
   @RequestMapping("/error-page/404")
-  public String errorPage404(HttpServletRequest request, HttpServletResponse reponse) {
+  public String errorPage404(HttpServletRequest request, HttpServletResponse response) {
     log.info("errorPage 404");
     printErrorInfo(request);
     return "error-page/404"; // 이렇게 스트링을 넘기면 error-page/404.html를 찾아간다.
@@ -28,7 +28,7 @@ public class ErrorPageController {
   }
 
   @RequestMapping("/error-page/500")
-  public String errorPage500(HttpServletRequest request, HttpServletResponse reponse) {
+  public String errorPage500(HttpServletRequest request, HttpServletResponse response) {
     log.info("errorPage 500");
     printErrorInfo(request);
     return "error-page/500";
