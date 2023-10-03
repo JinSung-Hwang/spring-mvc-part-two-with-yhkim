@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 @Slf4j
-//@Component // spring templates/error/xxx.html 을 사용하기 위해서 주석처리함
+@Component // spring templates/error/xxx.html 을 사용하기 위해서 주석처리함
 public class WebServerCustomizer implements WebServerFactoryCustomizer<ConfigurableWebServerFactory> {
   @Override
   public void customize(ConfigurableWebServerFactory factory) {
