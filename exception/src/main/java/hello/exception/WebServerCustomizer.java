@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 @Slf4j
-@Component // spring templates/error/xxx.html 을 사용하기 위해서 주석처리함
+//@Component // spring templates/error/xxx.html 을 사용하기 위해서 주석처리함
 public class WebServerCustomizer implements WebServerFactoryCustomizer<ConfigurableWebServerFactory> {
   @Override
   public void customize(ConfigurableWebServerFactory factory) {
@@ -25,7 +25,10 @@ public class WebServerCustomizer implements WebServerFactoryCustomizer<Configura
 }
 
 // note: 이렇게 WebServerFactoryCustomizer<ConfigurableWebServerFactory>를 이용해서 에러에따른 에러 라우팅을 등록하지 않고 스프링 부트에서 이미 설정된 세팅으로 에러페이지를 제공할 수 있다.
-// note: 스프링에서 이미 설정된 세팅으로 에러페이지를 제공하면 html만 만들어서 특정 경로에 생성해두면 된다. (스프링 부트 BasicErrorController.java 파일을 보면 세팅이 되어있다.)
+// note: 스프링 부트에서 이미 설정된 기본 세팅으로 에러가 발생하면 /error를 호출하게 되어있다.
+// note: /error로 이동하면 BasicErrorController.java에서 응답을 처리하게 된다.
+// note:
+
 
 // note: html을 특정 경로에 생성해두는것은 2가지 우선순위를 갖는다.
 // note:   1. 특정 경로의 error.html 파일이 우선순위를 갖는다.

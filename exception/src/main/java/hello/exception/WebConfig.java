@@ -2,9 +2,13 @@ package hello.exception;
 
 import hello.exception.filter.LogFilter;
 import hello.exception.interceptor.LogInterceptor;
+import hello.exception.resolver.MyHandlerExceptionResolver;
+import hello.exception.resolver.UserHandlerExceptionResolver;
+import java.util.List;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -24,7 +28,12 @@ public class WebConfig implements WebMvcConfigurer { // note: webMvcConfigurer�
       // note: 대신에 excludePathPatterns를 가지고 error호출은 interceptor를 타지 않도록 만들 수 있다.
   }
 
-//  @Bean
+  @Override
+  public void extendHandlerExceptionResolvers(List<HandlerExceptionResolver> resolvers) {
+    resolvers.add(new MyHandlerExceptionResolver()); // note: 여기서 resolver를 등록해야 예외가 발생할때 resolver가 실행된다.
+  }
+
+  //  @Bean
   public FilterRegistrationBean logFilter() {
     FilterRegistrationBean<Filter> filterRegistrationBean =new FilterRegistrationBean<>();
     filterRegistrationBean.setFilter(new LogFilter());
