@@ -31,6 +31,7 @@ public class WebConfig implements WebMvcConfigurer { // note: webMvcConfigurer�
   @Override
   public void extendHandlerExceptionResolvers(List<HandlerExceptionResolver> resolvers) {
     resolvers.add(new MyHandlerExceptionResolver()); // note: 여기서 resolver를 등록해야 예외가 발생할때 resolver가 실행된다.
+    resolvers.add(new UserHandlerExceptionResolver()); // note: 여기서 resolver를 등록해야 예외가 발생할때 resolver가 실행된다.
   }
 
   //  @Bean
