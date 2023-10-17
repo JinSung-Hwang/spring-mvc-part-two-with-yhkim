@@ -43,7 +43,15 @@ public class ApiExceptionController {
     // note: 3번째 파라미터에 발생한 예외를 넣고 1, 2번쨰 파라미터에 어떤 에러 코드와 메세지를 작성할것인지 넣으면 된다.
   }
 
+  @GetMapping("/api/default-handler-ex")
+  public String defaultException(@PathVariable Integer data) { // note: API에 data에 String값을 넣으면 400에러가 발생한다.
+    // note: 원래는 TypeMismatchException가 발생하면서 서블릿 컨테이너까지 올라가면서 500에러가 발생한다.
+    // note: 하지만 스프링 부트에 기본적으로 등록된 DefaultHandlerExceptionResolver.class가 500에러가 아니라 400에러가 발생하도록 예외전환을 한다.
 
+    // note: 즉, 정리하자면 DefaultHandlerExceptionResolver.class는 스프링 부트가 제공하는 기본 예외 처리기이다.
+
+    return "ok";
+  }
 
   @Data
   @AllArgsConstructor
