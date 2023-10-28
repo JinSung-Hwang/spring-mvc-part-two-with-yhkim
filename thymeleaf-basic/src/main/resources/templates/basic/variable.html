@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<h1>SpringEL 표현식</h1>
+<!-- // note: SpringEL이란? -->
+<!-- // note: 객체를 조작하고 조회하기 위한 스프링에서 제공하는 표현 언어이다. 메서드 호출 및 템플릿 기능을 제공한다. -->
+<!-- // note: 사용 이유? -->
+<!-- // note: 스프링에서 제공되는 모든 제품에서 단일 표현 언어를 제공하기 위해서 만들어졌다. -->
+<!-- // note: 사용 방법? -->
+<!-- // note: Object, List, Map 객체를 조회하는 방법은 아래와 같다. -->
+<ul>Object
+  <li>${user.username} = <span th:text="${user.username}"></span></li>
+  <li>${user['username']} = <span th:text="${user['username']}"></span></li>
+  <li>${user.getUsername()} = <span th:text="${user.getUsername()}"></span></li>
+</ul>
+<ul>List
+  <li>${users[0].username}    = <span th:text="${users[0].username}"></span></li>
+  <li>${users[0]['username']} = <span th:text="${users[0]['username']}"></span></li>
+  <li>${users[0].getUsername()} = <span th:text="${users[0].getUsername()}"></span></li>
+</ul>
+<ul>Map
+  <li>${userMap['userA'].username} =  <span th:text="${userMap['userA'].username}"></span></li>
+  <li>${userMap['userA']['username']} = <span th:text="${userMap['userA']['username']}"></span></li>
+  <li>${userMap['userA'].getUsername()} = <span th:text="${userMap['userA'].getUsername()}"></span></li>
+</ul>
+
+<!-- // note: 지역 변수 사용 방법 -->
+<h1>지역 변수 - (th:with)</h1>
+<div th:with="first=${users[0]}"> <!-- // note: users[0]을 first라는 지역 변수에 저장한다.. 이 지역변수는 div scope에서만 사용할 수 있다. -->
+  <p>처음 사람의 이름은 <span th:text="${first.username}"></span></p> </div>
+
+</body>
+</html>
