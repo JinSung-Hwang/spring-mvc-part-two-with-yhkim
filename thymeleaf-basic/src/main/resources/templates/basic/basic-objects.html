@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+
+<h1>식 기본 객체 (Expression Basic Objects)</h1>
+<ul>
+  <li>request = <span th:text="${#request}"></span></li> <!-- // note: HttpRequest, HttpResponse, HttpSession, ServletContext 등에 직접 접근할 수 있다. -->
+  <li>response = <span th:text="${#response}"></span></li>
+  <li>session = <span th:text="${#session}"></span></li>
+  <li>servletContext = <span th:text="${#servletContext}"></span></li>
+  <li>locale = <span th:text="${#locale}"></span></li>
+</ul>
+
+<h1>편의 객체</h1>
+<ul>
+  <li>Request Parameter = <span th:text="${param.paramData}"></span></li> <!-- note: request parameter에 접근할 수 있다. !-->
+  <li>session = <span th:text="${session.sessionData}"></span></li> <!-- note: 세션에 저장한 값에도 접근할 수 있다. !-->
+  <li>spring bean = <span th:text="${@helloBean.hello('Spring!')}"></span></li> <!-- // note: 등록한 빈에도 접근할 수 있다. -->
+</ul>
+
+</body>
+</html>
