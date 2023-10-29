@@ -1,5 +1,6 @@
 package hello.thymeleaf.basic;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -65,6 +66,12 @@ public class BasicController {
       public String hello(String data) {
         return "Hello " + data;
       }
+    }
+
+    @GetMapping("date")
+    public String data(Model model) { // note: 타임리프에서 제공하는 날를 다루는 방법을 배운다. (localDateTime, temporals.day)
+      model.addAttribute("localDateTime", LocalDateTime.now());
+      return "basic/date";
     }
 
     @Data
