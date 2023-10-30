@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<h1>URL 링크</h1>
+<!--// note: href 속성에 URL을 파라미터를 넣어서 PathVariable, QueryParameter를 동적으로 생성할 수 있다.-->
+<!--// note: path 설정 부분과 데이터 선언 부분이 분리되어있어서 유지보수성이 좋다.-->
+<ul>
+  <li><a th:href="@{/hello}">basic url</a></li>
+  <li><a th:href="@{/hello(param1=${param1}, param2=${param2})}">hello query param</a></li> <!-- // note: /hello?param1=data1&amp;param2=data2 -->
+  <li><a th:href="@{/hello/{param1}/{param2}(param1=${param1}, param2=${param2})}">path variable</a></li> <!-- note: /hello/data1/data2 -->
+  <li><a th:href="@{/hello/{param1}(param1=${param1}, param2=${param2})}">path variable + query parameter</a></li> <!-- note: /hello/data1?param2=data2 --> <!-- // note: parameter가 pathVariable에 등어가지 않으면 QueryParameter로 생성이 된다.-->
+</ul>
+</body>
+</html>
