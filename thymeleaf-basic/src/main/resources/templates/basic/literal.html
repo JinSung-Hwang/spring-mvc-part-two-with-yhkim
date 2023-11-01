@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body> <h1>리터럴</h1>
+<!--// note: thymleaf에서는 기본적으로 리터럴은 '' 로 감싸야한다.-->
+<!--// note: 즉 hello를 쓰려면 'hello'를 써야한다.-->
+<!--// note: hello를 쓸떄마다 ''를 쓰는것은 귀찮아서 thymleaf에서는 A-Z, a-z, 0-9, _, - 를 제외한 문자는 자동으로 ''를 붙여준다.-->
+<!--// note: 하지만 hello world! 를 쓰려면 hello world사이에 공백이있어서 ''로 감싸야한다.-->
+
+<!--// note: 아니면 리터럴 대체 문법을 사용하면 된다. -->
+<!--// note: 이 문법은 자바스크립트 `` 와 비슷하게 |literal ${data}| 이런식으로 사용하면 된다. (참조 19번라인)-->
+<ul>
+  <!--주의! 다음 주석을 풀면 예외가 발생함-->
+  <!--    <li>"hello world!" = <span th:text="hello world!"></span></li>-->
+  <li>'hello' + ' world!' = <span th:text="'hello' + ' world!'"></span></li> <li>'hello world!' = <span th:text="'hello world!'"></span></li>
+  <li>'hello ' + ${data} = <span th:text="'hello ' + ${data}"></span></li> <li>리터럴 대체 |hello ${data}| = <span th:text="|hello ${data}|"></span></li>
+</ul>
+</body>
+</html>
