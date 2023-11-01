@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+
+<ul>
+  <li>산술 연산
+    <ul>
+      <li>10 + 2 = <span th:text="10 + 2"></span></li>
+      <li>10 % 2 == 0 = <span th:text="10 % 2 == 0"></span></li>
+    </ul>
+  </li>
+  <li>비교 연산
+    <ul>
+      <li>1 > 10 = <span th:text="1 &gt; 10"></span></li> <!-- // note: 아래 줄 gt와 같은 연산이다. -->
+      <li>1 gt 10 = <span th:text="1 gt 10"></span></li>
+      <li>1 >= 10 = <span th:text="1 >= 10"></span></li> <!-- // note: 아래 줄 ge와 같은 연산이다. -->
+      <li>1 ge 10 = <span th:text="1 ge 10"></span></li>
+      <li>1 == 10 = <span th:text="1 == 10"></span></li>
+      <li>1 != 10 = <span th:text="1 != 10"></span></li>
+    </ul>
+  </li>
+  <li>조건식
+    <ul>
+      <li>(10 % 2 == 0)? '짝수':'홀수' = <span th:text="(10 % 2 == 0)? '짝수':'홀수'"></span></li>
+    </ul>
+  </li>
+  <li>Elvis 연산자
+<!--    // note: 데이터가 있으면 ${data}를 출력하고 없으면 '데이터가 없습니다.'를 출력한다. 삼항 연산자의 축약 버전이다.-->
+    <ul>
+      <li>${data}?: '데이터가 없습니다.' = <span th:text="${data}?: '데이터가 없습니다.'"></span></li>
+      <li>${nullData}?: '데이터가 없습니다.' = <span th:text="${nullData}?: '데이터가 없습니다.'"></span></li>
+    </ul>
+  </li>
+  <li>No-Operation
+    <ul>
+      <li>${data}?: _ = <span th:text="${data}?: _">데이터가 없습니다.</span></li> <!-- // note: _는 아무 연산을 하지 않는 연산자이다. 그래서 data가 없어서 _가 실행되면 '데이터가 없습니다.'가 출력된다. -->
+      <li>${nullData}?: _ = <span th:text="${nullData}?: _">데이터가 없습니다.</span></li>
+    </ul>
+  </li>
+</ul>
+</body>
+</html>
