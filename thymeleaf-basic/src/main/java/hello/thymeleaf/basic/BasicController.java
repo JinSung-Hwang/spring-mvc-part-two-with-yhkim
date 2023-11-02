@@ -94,7 +94,12 @@ public class BasicController {
       return "basic/operation";
     }
 
-    @Data
+    @GetMapping("/attribute")
+    public String attribute() {
+      return "basic/attribute";
+    }
+
+  @Data
     static class User {
       private String username;
       private int age;
