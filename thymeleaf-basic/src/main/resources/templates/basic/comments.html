@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body><h1>예시</h1>
+<span th:text="${data}">html data</span>
+<h1>1. 표준 HTML 주석</h1>
+<!--// note: HTML 주석은 렌더링은 안되지만 소스보기로는 주석이 표시된다.-->
+
+<!--
+<span th:text="${data}">html data</span>
+-->
+
+<h1>2. 타임리프 파서 주석</h1>
+<!--// note: 타임리플 파서 주석은 표시되지도 않고 소스보기로도 주석이 표시되지 않는다. 주석을 사용하면 보통 타임리프 파서 주석을 사용하는 것을 권장한다.-->
+<!--// note: 아래는 한줄짜리 타임리프 파서 주석 다는 방법-->
+<!--/* [[${data}]] */-->
+
+<!--// note: 아래는 여러줄 타임 리플 파서 주석 다는 방법-->
+<!--/*-->
+<span th:text="${data}">html data</span>
+<!--*/-->
+
+<h1>3. 타임리프 프로토타입 주석</h1>
+<!--// note: 타임리프 프로토타입 주석은 타임리프에서 렌더링이 되면 실제 엘리먼트로 렌더링도 된다. 하지만 파일을 직접 열면 주석 내용이 표시되지 않는다.-->
+<!--/*/
+<span th:text="${data}">html data</span>
+/*/-->
+</body>
+</html>
