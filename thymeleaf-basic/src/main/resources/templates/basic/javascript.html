@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<h3>마우스 오른쪽 클릭 -> 소스 보기 를 통해서 실행 결과를 확인하기</h3>
+
+<!-- note: 자바스크립트 인라인 사용 전 -->
+<script>
+  const username1 = "[[${user.username}]]"; // note: script 태그에 javascript를 inline을 안하면 Model의 값이 문자이면 ""를 써줘야 browser에서 에러가 안난다. 하지만 script에 javascript를 inline하면 ""를 따로 안챙겨줘도 에러가 나지 않는다.
+  const age1 = [[${user.age}]]; // note: 숫자타입은 ""를 안써줘야한다.
+  //자바스크립트 내추럴 템플릿
+  const testUsername1 = /*[[${user.username}]]*/ "test username";
+  //객체
+  // const user = [[${user}]]; // note: Model의 user객체를 꺼내서 user변수에 넣을려고하면 user.toString()이 호출되어서 동작이 이상하게되고 에러가난다. 하지만 script에 javascript를 inline하면 자바스크립트에 동작에 맞게 잘 작동된다.
+</script>
+
+
+<!-- note: 자바스크립트 인라인 사용 후 -->
+<script th:inline="javascript">
+  const username2 = [[${user.username}]];
+  const age2 = [[${user.age}]];
+  //자바스크립트 내추럴 템플릿
+  const testUsername2 = /*[[${user.username}]]*/ "test username";
+  //객체
+  const user = [[${user}]]; // note: Model의 user객체를 json으로 마샬링해서 객체 리터럴로 잘 만들어준다.
+</script>
+
+<!-- note: 자바스크립트 인라인 each -->
+<script th:inline="javascript">
+  [# th:each="user, stat : ${users}"]
+  var user[[${stat.count}]] = [[${user}]];
+  [/]
+</script>
+
+</body>
+</html>
