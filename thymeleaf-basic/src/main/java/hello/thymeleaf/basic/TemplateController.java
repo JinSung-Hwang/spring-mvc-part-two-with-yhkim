@@ -13,4 +13,9 @@ public class TemplateController {
     return "template/fragment/gragmentMain";
   }
 
+  @GetMapping("layout")
+  public String layout() {
+    return "template/layout/layoutMain";
+  }
+
 }

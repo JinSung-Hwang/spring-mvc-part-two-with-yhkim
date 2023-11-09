@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="template/layout/base :: common_header(~{::title},~{::link})"> <!-- // note: template/layout/base.html로 태그를 리플레이스 한다. 단. title, link에 파라미터 값을 넣어서 리플레이스한다. -->
+  <title>메인 타이틀</title> <!-- // note: 메인 바로 위에 줄 replace할때 title변수에 이 라인 title 태그 값이 입력된다. -->
+  <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}"> <!-- // note: 메인 바로 위에 위에 줄 replace할때 link변수에 이 라인 link 태그 값이 입력된다. -->
+  <link rel="stylesheet" th:href="@{/themes/smoothness/jquery-ui.css}">
+</head> <body> 메인 컨텐츠 </body> </html>
+
+<!--// note: 이건 코드와 결과를 같이 확인하자. localhost:8080/layout/template/layout/layoutMain 에 들어가서 마우스 우클릭 페이지 소스 보기를 하면 결과값을 확인할 수 있다.-->
