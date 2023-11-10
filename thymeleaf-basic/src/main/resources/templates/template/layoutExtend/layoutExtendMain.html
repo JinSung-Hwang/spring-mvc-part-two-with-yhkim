@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html th:replace="~{template/layoutExtend/layoutFile :: layout(~{::title}, ~{::section})}" xmlns:th="http://www.thymeleaf.org"> <!-- // note: html 태그에 replace가 있다. 즉 이 페이지 자체를 layoutFile로 replace해버린다. 단. title과 section정보를 layout에 전달한다. -->
+<head>
+  <title>메인 페이지 타이틀</title>
+</head>
+<body>
+<section>
+  <p>메인 페이지 컨텐츠</p>
+  <div>메인 페이지 포함 내용</div>
+</section>
+</body>
+</html>
+
+<!--// note: 이 방식의 장점-->
+<!--// note: 1. fragment 방식은 각 파일마다 필요한 파일을 넣어줘야해서 중복이 있지만 layout은 중복이 일어나지 않는다.-->
+<!--// note: 예를 들어 fragment방식으로 footer를 사용하면 각 파일마다 footer를 넣어줘야한다. 하지만 layout 방식은 그럴필요가 없다.-->
+
+<!--// note: 이 방식의 단점 -->
+<!--// note: 1. 이 방식은 layout을 잘 관리해야한다. layout 파일이 훼손되면 전체에 영향을 줄 수 있기 때문이다.-->
