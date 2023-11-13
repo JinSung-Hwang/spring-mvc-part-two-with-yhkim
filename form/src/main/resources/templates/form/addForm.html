@@ -36,6 +36,18 @@
 
         <hr class="my-4">
 
+        <hr class="my-4">
+        <!-- single checkbox -->
+        <div>판매 여부</div>
+        <div>
+            <div class="form-check">
+                <input type="checkbox" id="open" name="open" class="form-check-input"> <!-- note: html checkbox 엘리먼트는 check하지 않으면 서버로 open value가 false가 되어서 서버를 호출하지 않는다. 단 체크하면 open value는 ture가 되어서 서버를 호출함 -->
+                <input type="hidden" name="_open" value="on"/> <!-- 히든 필드 추가 --> <!-- note: checkbox 엘리먼트에서 check하지 않았을때 서버로 open value가 false가 되어서 서버를 호출하려면 이 라인을 추가해야한다. (type은 hidden으로 만들고 name에는 앞에 "_"를 붙였다. -->
+                <label for="open" class="form-check-label">판매 오픈</label>
+            </div>
+        </div>
+
+
         <div class="row">
             <div class="col">
                 <button class="w-100 btn btn-primary btn-lg" type="submit">상품 등록</button>
