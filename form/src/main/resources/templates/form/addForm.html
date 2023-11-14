@@ -38,11 +38,21 @@
 
         <hr class="my-4">
         <!-- single checkbox -->
+<!--        // note: th:field 없이 checkbox 처리할때 -->
+<!--        <div>판매 여부</div>-->
+<!--        <div>-->
+<!--            <div class="form-check">-->
+<!--                <input type="checkbox" id="open" name="open" class="form-check-input"> &lt;!&ndash; note: html checkbox 엘리먼트는 check하지 않으면 서버로 open value가 false가 되어서 서버를 호출하지 않는다. 단 체크하면 open value는 ture가 되어서 서버를 호출함 &ndash;&gt;-->
+<!--                <input type="hidden" name="_open" value="on"/> &lt;!&ndash; 히든 필드 추가 &ndash;&gt; &lt;!&ndash; note: checkbox 엘리먼트에서 check하지 않았을때 서버로 open value가 false가 되어서 서버를 호출하려면 이 라인을 추가해야한다. (type은 hidden으로 만들고 name에는 앞에 "_"를 붙였다. &ndash;&gt;-->
+<!--                <label for="open" class="form-check-label">판매 오픈</label>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--        // note: th:field로 checkbox 처리할때 -->
         <div>판매 여부</div>
         <div>
             <div class="form-check">
-                <input type="checkbox" id="open" name="open" class="form-check-input"> <!-- note: html checkbox 엘리먼트는 check하지 않으면 서버로 open value가 false가 되어서 서버를 호출하지 않는다. 단 체크하면 open value는 ture가 되어서 서버를 호출함 -->
-                <input type="hidden" name="_open" value="on"/> <!-- 히든 필드 추가 --> <!-- note: checkbox 엘리먼트에서 check하지 않았을때 서버로 open value가 false가 되어서 서버를 호출하려면 이 라인을 추가해야한다. (type은 hidden으로 만들고 name에는 앞에 "_"를 붙였다. -->
+                <input type="checkbox" id="open" th:field="*{open}" class="form-check-input"> <!-- // note: th:field를 checkbox에서 사용하면 46라인처럼 히든 필드를 추가할 필요가 없다. -->
                 <label for="open" class="form-check-label">판매 오픈</label>
             </div>
         </div>

@@ -39,6 +39,15 @@
     </div>
 
     <hr class="my-4">
+    <!-- single checkbox -->
+    <div>판매 여부</div>
+    <div>
+        <div class="form-check">
+            <input type="checkbox" id="open" th:field="${item.open}" class="form-check-input" disabled> <!-- // note: 상세 필드는 수정이 불가능하도록 disabled 처리한다. -->
+            <label for="open" class="form-check-label">판매 오픈</label>
+        </div>
+    </div>
+
 
     <div class="row">
         <div class="col">
