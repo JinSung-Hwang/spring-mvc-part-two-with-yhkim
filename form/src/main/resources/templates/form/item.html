@@ -59,6 +59,17 @@
         </div>
     </div>
 
+    <!-- radio button -->
+    <div>
+        <div>상품 종류</div>
+        <div th:each="type : ${itemTypes}" class="form-check form-check-inline">
+            <input type="radio" th:field="*{item.itemType}" th:value="${type.name()}" class="form-check-input" disabled> <!--note: 타임리프는 itemType과 name이 같으면 라디오버튼을 체크처리해준다. -->
+            <label th:for="${#ids.prev('itemType')}" th:text="${type.description}" class="form-check-label">
+                BOOK
+            </label>
+        </div>
+    </div>
+
 
     <div class="row">
         <div class="col">
