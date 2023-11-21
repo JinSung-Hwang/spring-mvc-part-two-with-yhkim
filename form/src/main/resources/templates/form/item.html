@@ -70,6 +70,18 @@
         </div>
     </div>
 
+    <!-- SELECT -->
+    <div>
+        <div>배송 방식</div>
+        <select th:field="*{item.deliveryCode}" class="form-select" disabled>
+            <option value="">==배송 방식 선택==</option>
+            <option th:each="deliveryCode : ${deliveryCodes}" th:value="${deliveryCode.code}" th:text="${deliveryCode.displayName}">FAST</option> <!-- note: 타임리프는 deliveryCode와 name이 같으면 옵션에 "selected" 속성을 넣어준다. -->
+        </select>
+    </div>
+
+    <hr class="my-4">
+
+
 
     <div class="row">
         <div class="col">
