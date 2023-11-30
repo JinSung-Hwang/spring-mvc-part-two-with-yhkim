@@ -16,8 +16,4 @@ public class StringToIpPortConverter implements Converter<String, IpPort> {
     int port = Integer.parseInt(split[1]);
     return new IpPort(ip, port);
   }
-
-
-
-
 }

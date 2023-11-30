@@ -22,6 +22,7 @@ public class ConversionServiceTest {
     conversionService.addConverter(new IpPortToStringConverter());
 
     // 사용
+
     assertThat(conversionService.convert("10", Integer.class)).isEqualTo(10); // note: 사용할때는 변환할 value와 변환한 타입만 지정하면 된다.
     assertThat(conversionService.convert(10, String.class)).isEqualTo("10");
     assertThat(conversionService.convert("127.0.0.1:8080", IpPort.class)).isEqualTo(new IpPort("127.0.0.1", 8080));
