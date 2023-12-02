@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body> <ul>
+  <li>${number}: <span th:text="${number}" ></span></li>
+  <li>${{number}}: <span th:text="${{number}}" ></span></li> <!-- // note: {{}}를 사용하면 컨버터가 적용되고 {}는 컨버터는 적용되지 않는다. 내부적으로는 스프링 컨버전 서비스를 사용한다.-->
+  <li>${ipPort}: <span th:text="${ipPort}" ></span></li>
+  <li>${{ipPort}}: <span th:text="${{ipPort}}" ></span></li>
+</ul>
+</body>
+</html>
