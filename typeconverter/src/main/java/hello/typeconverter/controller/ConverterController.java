@@ -14,6 +14,10 @@ public class ConverterController {
 //   note: 여기에서는 View에 데이터를 전달할때 Model에 객체를 그대로 넣지만 ConversionService를 통해 Thymeleaf에서 사용할 수 있는 형태로 변환되는것을 확인하려고 한다.
 //   note: 하여 ConverterController와 Converter-form.html, Converter-view.html 파일을 같이 보면서 확인하면 된다.
 
+//   note: 주의 할점은 ConversionService는 HttpMessageConverter에는 컨버전 서비스가 적용되지 않는다.
+//   note: HttpMessageConverter는 Http Body의 내용을 객체로 변환하거나 객체를 Body에 입력하는 것이다.
+//   note: HttpMessageConverter는 JackSon과 같은 라이브러리를 사용하여 HttpMessageConverter는 ConversionService를 사용하지 않는다.
+
   @GetMapping("/converter-view")
   public String converterView(Model model) {
     model.addAttribute("number", 10000);
